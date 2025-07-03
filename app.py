@@ -11,6 +11,9 @@ from pacientes import cadastrar_pacientes
 
 import streamlit as st
 
+
+def login():
+    
 st.set_page_config(
     page_title="São Lucas - Agendamentos",
     page_icon="🧪",
@@ -19,12 +22,6 @@ st.set_page_config(
 )
 
 
-def login():
-    st.set_page_config(
-        page_title="Login - Laboratório São Lucas",
-        page_icon="🧪",
-        layout="centered"
-    )
 
     st.markdown("""
         <style>
