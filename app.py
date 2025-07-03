@@ -34,47 +34,56 @@ st.set_page_config(
 
 
 def login():
+    st.set_page_config(page_title="São Lucas - Login", layout="centered")
 
+    # Estilos personalizados
     st.markdown("""
         <style>
+            body {
+                background-color: #f0f2f6;
+            }
             .login-box {
+                width: 100%;
                 max-width: 400px;
-                margin: auto;
-                margin-top: 50px;
-                padding: 30px;
-                background-color: #f8f9fa;
+                margin: 0 auto;
+                padding: 40px;
+                background-color: #ffffff;
                 border-radius: 12px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
                 text-align: center;
             }
-            .login-logo {
-                width: 100px;
+            .login-box img {
+                width: 130px;
                 margin-bottom: 20px;
             }
             .login-title {
                 font-size: 26px;
                 font-weight: bold;
                 color: #056644;
-                margin-bottom: 20px;
+                margin-bottom: 25px;
             }
             .stButton>button {
-                width: 100%;
                 background-color: #056644;
                 color: white;
                 font-weight: bold;
                 padding: 10px;
-                border-radius: 8px;
-                border: none;
+                border-radius: 6px;
+                width: 100%;
+            }
+            .stTextInput>div>div>input {
+                padding: 10px;
+                border-radius: 6px;
+                border: 1px solid #ccc;
             }
         </style>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="login-box">', unsafe_allow_html=True)
-    st.image("static/logo_sao_lucas.png", width=100)
+    st.image("static/logo_sao_lucas.png")
     st.markdown('<div class="login-title">🔐 Login</div>', unsafe_allow_html=True)
 
-    usuario = st.text_input("👤 Usuário")
-    senha = st.text_input("🔑 Senha", type="password")
+    usuario = st.text_input("Usuário")
+    senha = st.text_input("Senha", type="password")
 
     if st.button("Entrar"):
         import sqlite3
@@ -91,7 +100,6 @@ def login():
             st.rerun()
         else:
             st.error("Usuário ou senha inválidos")
-
     st.markdown("</div>", unsafe_allow_html=True)
 
     return st.session_state.get("logado", False)
