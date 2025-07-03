@@ -8,29 +8,64 @@ from relatorios import relatorios_mensais
 from medicos import cadastrar_medicos
 from pacientes import cadastrar_pacientes
 
+
+import streamlit as st
+
+st.set_page_config(
+    page_title="São Lucas - Agendamentos",
+    page_icon="🧪",
+    layout="centered",
+    initial_sidebar_state="auto"
+)
+
+
 def login():
-    st.title("🔐 Login")
+    st.set_page_config(
+        page_title="Login - Laboratório São Lucas",
+        page_icon="🧪",
+        layout="centered"
+    )
 
-    if "logado" not in st.session_state:
-        st.session_state["logado"] = False
-    if "tipo" not in st.session_state:
-        st.session_state["tipo"] = None
-    if "usuario" not in st.session_state:
-        st.session_state["usuario"] = None
+    st.markdown("""
+        <style>
+            .login-box {
+                max-width: 400px;
+                margin: auto;
+                margin-top: 50px;
+                padding: 30px;
+                background-color: #f8f9fa;
+                border-radius: 12px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                text-align: center;
+            }
+            .login-logo {
+                width: 100px;
+                margin-bottom: 20px;
+            }
+            .login-title {
+                font-size: 26px;
+                font-weight: bold;
+                color: #056644;
+                margin-bottom: 20px;
+            }
+            .stButton>button {
+                width: 100%;
+                background-color: #056644;
+                color: white;
+                font-weight: bold;
+                padding: 10px;
+                border-radius: 8px;
+                border: none;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
-    if st.session_state["logado"]:
-        st.success(f"Logado como {st.session_state['usuario']} ({st.session_state['tipo']})")
-        if st.button("Sair"):
-            st.session_state["logado"] = False
-            st.session_state["usuario"] = None
-            st.session_state["tipo"] = None
-            st.rerun()  # ✅ substituído
-        return True
+    st.markdown('<div class="login-box">', unsafe_allow_html=True)
+    st.image("static/logo_sao_lucas.png", width=100)
+    st.markdown('<div class="login-title">🔐 Login</div>', unsafe_allow_html=True)
 
-    usuario = st.text_input("Usuário")
-    senha = st.text_input("Senha", type="password")
-
-    entrou = False
+    usuario = st.text_input("👤 Usuário")
+    senha = st.text_input("🔑 Senha", type="password")
 
     if st.button("Entrar"):
         import sqlite3
@@ -43,15 +78,15 @@ def login():
             st.session_state["logado"] = True
             st.session_state["usuario"] = usuario
             st.session_state["tipo"] = resultado[0]
-            entrou = True
+            st.success("Login realizado com sucesso!")
+            st.rerun()
         else:
             st.error("Usuário ou senha inválidos")
 
-    if entrou:
-        st.success(f"Bem-vindo, {usuario}!")
-        st.rerun()  # ✅ substituído
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    return st.session_state["logado"]
+    return st.session_state.get("logado", False)
+
 
 def main():
     criar_tabelas()
