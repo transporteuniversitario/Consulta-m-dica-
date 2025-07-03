@@ -36,25 +36,24 @@ st.set_page_config(
 def login():
     st.set_page_config(page_title="São Lucas - Login", layout="centered")
 
-    # Estilos personalizados
+    # HTML + CSS customizado
     st.markdown("""
         <style>
             body {
                 background-color: #f0f2f6;
             }
             .login-box {
-                width: 100%;
-                max-width: 400px;
-                margin: 0 auto;
+                max-width: 420px;
+                margin: 5vh auto;
                 padding: 40px;
-                background-color: #ffffff;
+                background-color: white;
                 border-radius: 12px;
                 box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
                 text-align: center;
             }
             .login-box img {
-                width: 130px;
-                margin-bottom: 20px;
+                width: 160px;
+                margin-bottom: 25px;
             }
             .login-title {
                 font-size: 26px;
@@ -66,7 +65,6 @@ def login():
                 background-color: #056644;
                 color: white;
                 font-weight: bold;
-                padding: 10px;
                 border-radius: 6px;
                 width: 100%;
             }
@@ -79,7 +77,7 @@ def login():
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="login-box">', unsafe_allow_html=True)
-    st.image("static/logo_sao_lucas.png")
+    st.image("static/logo_sao_lucas.png")  # ✅ Só um logo aqui
     st.markdown('<div class="login-title">🔐 Login</div>', unsafe_allow_html=True)
 
     usuario = st.text_input("Usuário")
@@ -100,9 +98,11 @@ def login():
             st.rerun()
         else:
             st.error("Usuário ou senha inválidos")
-    st.markdown("</div>", unsafe_allow_html=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     return st.session_state.get("logado", False)
+
 
 
 def main():
