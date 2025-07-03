@@ -1,6 +1,9 @@
 import streamlit as st
 import sqlite3
 from datetime import date
+from whatsapp_utils import enviar_whatsapp
+
+
 
 def agendar_consulta():
     st.title("📅 Agendamento de Consulta")
@@ -49,6 +52,7 @@ def agendar_consulta():
     conn.close()
 
 def ver_agenda():
+    from whatsapp_utils import enviar_whatsapp  # certifique-se de que o arquivo existe
     st.title("📋 Agenda do Dia - Com Filtros")
 
     conn = sqlite3.connect("banco.db")
@@ -129,8 +133,17 @@ def ver_agenda():
         **Forma de pagamento:** {ag[9]}  
         **Status:** {ag[10]}  
         **Presença:** {ag[11]}  
-        ---
         """)
+
+        # MENSAGEM PERSONALIZADA
+        mensagem = (
+            f"Olá {ag[1]}, sua consulta está agendada para o dia {ag[5]} às {ag[6]} "
+            f"com Dr(a). {ag[3]} ({ag[4]}). Valor: R$ {ag[7]:.2f}. "
+            f"Status: {ag[10]}. Forma de pagamento: {ag[9]}."
+        )
+        enviar_whatsapp(ag[2], mensagem)
+
+        st.markdown("---")
 
     conn.close()
 
