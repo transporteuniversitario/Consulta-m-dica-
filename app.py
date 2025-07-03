@@ -24,13 +24,13 @@ def login():
             st.session_state["logado"] = False
             st.session_state["usuario"] = None
             st.session_state["tipo"] = None
-            st.experimental_rerun()
+            st.rerun()  # ✅ substituído
         return True
 
     usuario = st.text_input("Usuário")
     senha = st.text_input("Senha", type="password")
 
-    entrou = False  # flag para controlar se logou
+    entrou = False
 
     if st.button("Entrar"):
         import sqlite3
@@ -49,10 +49,9 @@ def login():
 
     if entrou:
         st.success(f"Bem-vindo, {usuario}!")
-        st.experimental_rerun()
+        st.rerun()  # ✅ substituído
 
     return st.session_state["logado"]
-
 
 def main():
     criar_tabelas()
@@ -73,7 +72,7 @@ def main():
         conn.close()
 
     if not login():
-        return  # ✅ este return está dentro da função
+        return
 
     tipo = st.session_state["tipo"]
 
@@ -114,7 +113,7 @@ def main():
         st.session_state["logado"] = False
         st.session_state["usuario"] = None
         st.session_state["tipo"] = None
-        st.experimental_rerun()
+        st.rerun()  # ✅ substituído
 
     elif opcao == "Cadastro de Médicos":
         cadastrar_medicos()
@@ -137,4 +136,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
