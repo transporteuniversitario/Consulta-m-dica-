@@ -8,6 +8,14 @@ from relatorios import relatorios_mensais
 from medicos import cadastrar_medicos
 from pacientes import cadastrar_pacientes
 
+
+st.set_page_config(
+    page_title="Sistema de Agendamentos",
+    page_icon="📅",
+    layout="centered"
+)
+
+
 def login():
     st.title("🔐 Login")
 
