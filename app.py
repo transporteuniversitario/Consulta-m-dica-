@@ -30,8 +30,8 @@ def login():
     usuario = st.text_input("Usuário")
     senha = st.text_input("Senha", type="password")
 
+    entrou = False  # flag para controlar se logou
 
-    
     if st.button("Entrar"):
         import sqlite3
         conn = sqlite3.connect("banco.db")
@@ -43,11 +43,16 @@ def login():
             st.session_state["logado"] = True
             st.session_state["usuario"] = usuario
             st.session_state["tipo"] = resultado[0]
-            st.success(f"Bem-vindo, {usuario}!")
-            st.experimental_rerun()
+            entrou = True
         else:
             st.error("Usuário ou senha inválidos")
-    return False
+
+    if entrou:
+        st.success(f"Bem-vindo, {usuario}!")
+        st.experimental_rerun()
+
+    return st.session_state["logado"]
+
 
 def main():
     criar_tabelas()
