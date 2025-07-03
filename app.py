@@ -30,23 +30,6 @@ def login():
     senha = st.text_input("Senha", type="password")
 
 
-# ⚠️ Trecho TEMPORÁRIO para criar o usuário admin via botão no app
-import sqlite3
-if st.sidebar.button("⚙️ Criar usuário admin"):
-    conn = sqlite3.connect("banco.db")
-    cursor = conn.cursor()
-    try:
-        cursor.execute("""
-            INSERT INTO usuarios (usuario, senha, tipo)
-            VALUES (?, ?, ?)
-        """, ("admin", "admin123", "admin"))
-        conn.commit()
-        st.sidebar.success("Usuário admin criado com sucesso!")
-    except sqlite3.IntegrityError:
-        st.sidebar.warning("Usuário admin já existe.")
-    conn.close()
-
-
     
     if st.button("Entrar"):
         import sqlite3
@@ -67,6 +50,24 @@ if st.sidebar.button("⚙️ Criar usuário admin"):
 
 def main():
     criar_tabelas()
+
+
+    # ⚠️ Trecho TEMPORÁRIO: botão para criar usuário admin
+if st.sidebar.button("⚙️ Criar usuário admin"):
+    import sqlite3
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO usuarios (usuario, senha, tipo)
+            VALUES (?, ?, ?)
+        """, ("admin", "admin123", "admin"))
+        conn.commit()
+        st.sidebar.success("Usuário admin criado com sucesso!")
+    except sqlite3.IntegrityError:
+        st.sidebar.warning("Usuário admin já existe.")
+    conn.close()
+
 
     if not login():
         return
