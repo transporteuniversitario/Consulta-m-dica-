@@ -7,67 +7,51 @@ from dashboard import dashboard
 from relatorios import relatorios_mensais
 from medicos import cadastrar_medicos
 from pacientes import cadastrar_pacientes
-import sqlite3
-
 
 def login():
-    # Centralizar o conteúdo
-    st.markdown("""
-        <style>
-            .login-box {
-                width: 400px;
-                margin: 0 auto;
-                padding: 30px;
-                background-color: #f9f9f9;
-                border-radius: 15px;
-                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-                margin-top: 50px;
-            }
-            .login-title {
-                text-align: center;
-                font-size: 28px;
-                margin-bottom: 30px;
-                font-weight: bold;
-            }
-            .stButton>button {
-                width: 100%;
-                background-color: #4CAF50;
-                color: white;
-                padding: 10px;
-                font-size: 16px;
-                border: none;
-                border-radius: 5px;
-            }
-        </style>
-    """, unsafe_allow_html=True)
+    st.title("🔐 Login")
 
-    st.markdown('<div class="login-box">', unsafe_allow_html=True)
+    if "logado" not in st.session_state:
+        st.session_state["logado"] = False
+    if "tipo" not in st.session_state:
+        st.session_state["tipo"] = None
+    if "usuario" not in st.session_state:
+        st.session_state["usuario"] = None
 
-    st.markdown('<div class="login-title">🔐 Login</div>', unsafe_allow_html=True)
-    st.markdown(f'<p style="text-align: center; color: gray;">Versão do Streamlit: {st.__version__}</p>', unsafe_allow_html=True)
+    if st.session_state["logado"]:
+        st.success(f"Logado como {st.session_state['usuario']} ({st.session_state['tipo']})")
+        if st.button("Sair"):
+            st.session_state["logado"] = False
+            st.session_state["usuario"] = None
+            st.session_state["tipo"] = None
+            st.experimental_rerun()
+        return True
 
-    usuario = st.text_input("👤 Usuário")
-    senha = st.text_input("🔑 Senha", type="password")
+    usuario = st.text_input("Usuário")
+    senha = st.text_input("Senha", type="password")
 
-    if st.button("🚪 Entrar"):
+    entrou = False  # flag para controlar se logou
+
+    if st.button("Entrar"):
+        import sqlite3
         conn = sqlite3.connect("banco.db")
         cursor = conn.cursor()
         cursor.execute("SELECT tipo FROM usuarios WHERE usuario = ? AND senha = ?", (usuario, senha))
         resultado = cursor.fetchone()
         conn.close()
-
         if resultado:
             st.session_state["logado"] = True
             st.session_state["usuario"] = usuario
             st.session_state["tipo"] = resultado[0]
-            st.success(f"✅ Bem-vindo, {usuario}!")
-            st.rerun()
+            entrou = True
         else:
-            st.error("❌ Usuário ou senha inválidos.")
+            st.error("Usuário ou senha inválidos")
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    if entrou:
+        st.success(f"Bem-vindo, {usuario}!")
+        st.experimental_rerun()
 
-    return st.session_state.get("logado", False)
+    return st.session_state["logado"]
 
 
 def main():
@@ -89,7 +73,7 @@ def main():
         conn.close()
 
     if not login():
-        return
+        return  # ✅ este return está dentro da função
 
     tipo = st.session_state["tipo"]
 
@@ -130,7 +114,7 @@ def main():
         st.session_state["logado"] = False
         st.session_state["usuario"] = None
         st.session_state["tipo"] = None
-        st.rerun()  # ✅ substituído
+        st.experimental_rerun()
 
     elif opcao == "Cadastro de Médicos":
         cadastrar_medicos()
