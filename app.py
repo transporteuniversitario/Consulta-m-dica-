@@ -14,6 +14,16 @@ import streamlit as st
 
     
 
+
+import os
+
+logo_path = "static/logo_sao_lucas.png"
+if os.path.exists(logo_path):
+    st.image(logo_path, width=100)
+else:
+    st.warning("⚠️ Logo não encontrado. Verifique o caminho: static/logo_sao_lucas.png")
+    
+
 st.set_page_config(
     page_title="São Lucas - Agendamentos",
     page_icon="🧪",
