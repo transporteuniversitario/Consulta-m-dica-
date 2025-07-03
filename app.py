@@ -106,7 +106,19 @@ def login():
 
 
 def main():
+    st.set_page_config(page_title="São Lucas - Painel", layout="wide")
+
     criar_tabelas()
+
+    # ⚠️ Verifica se o usuário está logado
+    if not st.session_state.get("logado", False):
+        login()  # Mostra o login e para aqui
+        return  # ⚠️ Sai da função main se não logado
+
+    # ✅ Apenas usuários logados chegam aqui:
+    tipo = st.session_state["tipo"]
+    usuario = st.session_state["usuario"]
+
 
     if st.sidebar.button("⚙️ Criar usuário admin"):
         import sqlite3
