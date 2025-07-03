@@ -7,118 +7,71 @@ from dashboard import dashboard
 from relatorios import relatorios_mensais
 from medicos import cadastrar_medicos
 from pacientes import cadastrar_pacientes
-
-
-import streamlit as st
-
-
-    
-
-
-import os
-
-logo_path = "static/logo_sao_lucas.png"
-if os.path.exists(logo_path):
-    st.image(logo_path, width=100)
-else:
-    st.warning("⚠️ Logo não encontrado. Verifique o caminho: static/logo_sao_lucas.png")
-    
-
-st.set_page_config(
-    page_title="São Lucas - Agendamentos",
-    page_icon="🧪",
-    layout="centered",
-    initial_sidebar_state="auto"
-)
-
+import sqlite3
 
 
 def login():
-    st.set_page_config(page_title="São Lucas - Login", layout="centered")
-
-    # HTML + CSS customizado
+    # Centralizar o conteúdo
     st.markdown("""
         <style>
-            body {
-                background-color: #f0f2f6;
-            }
             .login-box {
-                max-width: 420px;
-                margin: 5vh auto;
-                padding: 40px;
-                background-color: white;
-                border-radius: 12px;
-                box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-                text-align: center;
-            }
-            .login-box img {
-                width: 160px;
-                margin-bottom: 25px;
+                width: 400px;
+                margin: 0 auto;
+                padding: 30px;
+                background-color: #f9f9f9;
+                border-radius: 15px;
+                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+                margin-top: 50px;
             }
             .login-title {
-                font-size: 26px;
+                text-align: center;
+                font-size: 28px;
+                margin-bottom: 30px;
                 font-weight: bold;
-                color: #056644;
-                margin-bottom: 25px;
             }
             .stButton>button {
-                background-color: #056644;
-                color: white;
-                font-weight: bold;
-                border-radius: 6px;
                 width: 100%;
-            }
-            .stTextInput>div>div>input {
+                background-color: #4CAF50;
+                color: white;
                 padding: 10px;
-                border-radius: 6px;
-                border: 1px solid #ccc;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px;
             }
         </style>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="login-box">', unsafe_allow_html=True)
-    st.image("static/logo_sao_lucas.png")  # ✅ Só um logo aqui
+
     st.markdown('<div class="login-title">🔐 Login</div>', unsafe_allow_html=True)
+    st.markdown(f'<p style="text-align: center; color: gray;">Versão do Streamlit: {st.__version__}</p>', unsafe_allow_html=True)
 
-    usuario = st.text_input("Usuário")
-    senha = st.text_input("Senha", type="password")
+    usuario = st.text_input("👤 Usuário")
+    senha = st.text_input("🔑 Senha", type="password")
 
-    if st.button("Entrar"):
-        import sqlite3
+    if st.button("🚪 Entrar"):
         conn = sqlite3.connect("banco.db")
         cursor = conn.cursor()
         cursor.execute("SELECT tipo FROM usuarios WHERE usuario = ? AND senha = ?", (usuario, senha))
         resultado = cursor.fetchone()
         conn.close()
+
         if resultado:
             st.session_state["logado"] = True
             st.session_state["usuario"] = usuario
             st.session_state["tipo"] = resultado[0]
-            st.success("Login realizado com sucesso!")
+            st.success(f"✅ Bem-vindo, {usuario}!")
             st.rerun()
         else:
-            st.error("Usuário ou senha inválidos")
+            st.error("❌ Usuário ou senha inválidos.")
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     return st.session_state.get("logado", False)
 
 
-
 def main():
-    st.set_page_config(page_title="São Lucas - Painel", layout="wide")
-
     criar_tabelas()
-
-    # ⚠️ Verifica se o usuário está logado
-    if not st.session_state.get("logado", False):
-        login()  # Mostra o login e para aqui
-        return  # ⚠️ Sai da função main se não logado
-
-    # ✅ Apenas usuários logados chegam aqui:
-    tipo = st.session_state["tipo"]
-    usuario = st.session_state["usuario"]
-
 
     if st.sidebar.button("⚙️ Criar usuário admin"):
         import sqlite3
