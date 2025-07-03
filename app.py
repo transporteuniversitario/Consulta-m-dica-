@@ -1,4 +1,5 @@
 import streamlit as st
+st.write("Versão do Streamlit:", st.__version__)
 from utils import criar_tabelas
 from usuarios import gerenciar_usuarios
 from agenda import ver_agenda, agendar_consulta, ver_agenda_medico
