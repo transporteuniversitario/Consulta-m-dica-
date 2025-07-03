@@ -51,26 +51,23 @@ def login():
 def main():
     criar_tabelas()
 
-
-    # ⚠️ Trecho TEMPORÁRIO: botão para criar usuário admin
-if st.sidebar.button("⚙️ Criar usuário admin"):
-    import sqlite3
-    conn = sqlite3.connect("banco.db")
-    cursor = conn.cursor()
-    try:
-        cursor.execute("""
-            INSERT INTO usuarios (usuario, senha, tipo)
-            VALUES (?, ?, ?)
-        """, ("admin", "admin123", "admin"))
-        conn.commit()
-        st.sidebar.success("Usuário admin criado com sucesso!")
-    except sqlite3.IntegrityError:
-        st.sidebar.warning("Usuário admin já existe.")
-    conn.close()
-
+    if st.sidebar.button("⚙️ Criar usuário admin"):
+        import sqlite3
+        conn = sqlite3.connect("banco.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute("""
+                INSERT INTO usuarios (usuario, senha, tipo)
+                VALUES (?, ?, ?)
+            """, ("admin", "admin123", "admin"))
+            conn.commit()
+            st.sidebar.success("Usuário admin criado com sucesso!")
+        except sqlite3.IntegrityError:
+            st.sidebar.warning("Usuário admin já existe.")
+        conn.close()
 
     if not login():
-        return
+        return  # ✅ este return está dentro da função
 
     tipo = st.session_state["tipo"]
 
