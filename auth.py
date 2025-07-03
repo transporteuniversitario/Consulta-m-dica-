@@ -1,24 +1,38 @@
-
-import streamlit as st
 import sqlite3
 
-def login():
-    st.title("Login")
-    usuario = st.text_input("Usuário")
-    senha = st.text_input("Senha", type="password")
+def verificar_login(usuario, senha):
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT tipo FROM usuarios WHERE usuario = ? AND senha = ?", (usuario, senha))
+    resultado = cursor.fetchone()
+    conn.close()
+    if resultado:
+        return resultado[0]  # tipo do usuário (admin, secretaria, medico)
+    return None
 
-    if st.button("Entrar"):
-        conn = sqlite3.connect("data/banco.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM usuarios WHERE usuario=? AND senha=?", (usuario, senha))
-        result = cursor.fetchone()
+def criar_usuario(usuario, senha, tipo="secretaria"):
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO usuarios (usuario, senha, tipo) VALUES (?, ?, ?)", (usuario, senha, tipo))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
         conn.close()
 
-        if result:
-            st.session_state.logged_in = True
-        else:
-            st.error("Usuário ou senha inválido.")
+def buscar_usuarios():
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT id, usuario, tipo FROM usuarios ORDER BY usuario")
+    usuarios = cursor.fetchall()
+    conn.close()
+    return usuarios
 
-def check_auth():
-    if "logged_in" not in st.session_state or not st.session_state.logged_in:
-        st.stop()
+def excluir_usuario(user_id):
+    conn = sqlite3.connect("banco.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM usuarios WHERE id = ?", (user_id,))
+    conn.commit()
+    conn.close()
